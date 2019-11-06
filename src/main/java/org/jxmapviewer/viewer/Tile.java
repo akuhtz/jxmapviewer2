@@ -25,7 +25,6 @@ public class Tile extends AbstractBean {
 	/**
 	 * The loading priority
 	 */
-	@SuppressWarnings("javadoc")
 	public enum Priority {
 		High, Low
 	}

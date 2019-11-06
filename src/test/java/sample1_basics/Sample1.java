@@ -1,5 +1,8 @@
 package sample1_basics;
 
+import java.net.Authenticator;
+import java.net.PasswordAuthentication;
+
 import javax.swing.JFrame;
 
 import org.jxmapviewer.JXMapViewer;
@@ -19,6 +22,8 @@ public class Sample1 {
 	 *            the program args (ignored)
 	 */
 	public static void main(String[] args) {
+		
+
 		JXMapViewer mapViewer = new JXMapViewer();
 
 		// Create a TileFactoryInfo for OpenStreetMap
@@ -41,5 +46,17 @@ public class Sample1 {
 		frame.setSize(800, 600);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.setVisible(true);
+	}
+
+	public static class ProxyAuth extends Authenticator {
+		private PasswordAuthentication auth;
+
+		private ProxyAuth(String user, String password) {
+			auth = new PasswordAuthentication(user, password == null ? new char[] {} : password.toCharArray());
+		}
+
+		protected PasswordAuthentication getPasswordAuthentication() {
+			return auth;
+		}
 	}
 }

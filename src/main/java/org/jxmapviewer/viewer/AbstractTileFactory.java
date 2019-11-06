@@ -53,7 +53,27 @@ public abstract class AbstractTileFactory extends TileFactory {
 	// of GoogleTileFactories because each tile is, really, a singleton.
 	private Map<String, Tile> tileMap = new HashMap<String, Tile>();
 
-	private TileCache cache = new TileCache();
+	private TileCache cache = new DefaultTileCache();
+
+	/** ==== threaded tile loading stuff === */
+	/**
+	 * Thread pool for loading the tiles
+	 */
+	private BlockingQueue<Tile> tileQueue = new PriorityBlockingQueue<Tile>(5, new Comparator<Tile>() {
+		@Override
+		public int compare(Tile o1, Tile o2) {
+			if (o1.getPriority() == Tile.Priority.Low && o2.getPriority() == Tile.Priority.High) {
+				return 1;
+			}
+			if (o1.getPriority() == Tile.Priority.High && o2.getPriority() == Tile.Priority.Low) {
+				return -1;
+			}
+			return 0;
+
+		}
+	});
+
+	private LocalCache localCache = new NoOpLocalCache();
 
 	/**
 	 * Creates a new instance of DefaultTileFactory using the spcified
@@ -152,26 +172,6 @@ public abstract class AbstractTileFactory extends TileFactory {
 	public void setTileCache(TileCache cache) {
 		this.cache = cache;
 	}
-
-	/** ==== threaded tile loading stuff === */
-	/**
-	 * Thread pool for loading the tiles
-	 */
-	private BlockingQueue<Tile> tileQueue = new PriorityBlockingQueue<Tile>(5, new Comparator<Tile>() {
-		@Override
-		public int compare(Tile o1, Tile o2) {
-			if (o1.getPriority() == Tile.Priority.Low && o2.getPriority() == Tile.Priority.High) {
-				return 1;
-			}
-			if (o1.getPriority() == Tile.Priority.High && o2.getPriority() == Tile.Priority.Low) {
-				return -1;
-			}
-			return 0;
-
-		}
-	});
-
-	private LocalCache localCache = new NoOpLocalCache();
 
 	/**
 	 * Subclasses may override this method to provide their own executor services.
@@ -356,8 +356,6 @@ public abstract class AbstractTileFactory extends TileFactory {
 							}
 						});
 					}
-				} catch (OutOfMemoryError memErr) {
-					cache.needMoreMemory();
 				} catch (FileNotFoundException fnfe) // relevant for local URLs such as JAR/ZIP files only
 				{
 					log.error("Unable to load tile: " + fnfe.getMessage());
@@ -377,7 +375,7 @@ public abstract class AbstractTileFactory extends TileFactory {
 			InputStream ins = localCache.get(url);
 			if (ins == null) {
 				URLConnection connection = url.openConnection();
-				connection.setRequestProperty("User-Agent", userAgent);
+				configurateURLConnection(connection);
 				ins = connection.getInputStream();
 			}
 			try {
@@ -400,5 +398,16 @@ public abstract class AbstractTileFactory extends TileFactory {
 			}
 			return bout.toByteArray();
 		}
+	}
+
+	/**
+	 * 
+	 * @param connection
+	 */
+	protected void configurateURLConnection(final URLConnection connection) {
+		connection.setRequestProperty("User-Agent", userAgent);
+		connection.setRequestProperty("Accept", "*/*");
+		connection.setRequestProperty("Accept-Encoding", "gzip, deflate, br");
+		connection.setRequestProperty("Accept-Language", "en-US,en;q=0.5");
 	}
 }

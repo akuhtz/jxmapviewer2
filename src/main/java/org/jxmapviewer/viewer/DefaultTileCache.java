@@ -27,8 +27,8 @@ import org.slf4j.LoggerFactory;
  * 
  * @author joshua.marinacci@sun.com
  */
-public class TileCache {
-	private static final Logger log = LoggerFactory.getLogger(TileCache.class);
+public class DefaultTileCache implements TileCache {
+	private static final Logger log = LoggerFactory.getLogger(DefaultTileCache.class);
 
 	private Map<URI, BufferedImage> imgmap = new HashMap<URI, BufferedImage>();
 	private LinkedList<URI> imgmapAccessQueue = new LinkedList<URI>();
@@ -40,7 +40,7 @@ public class TileCache {
 	/**
 	 * Default constructor - Empty
 	 */
-	public TileCache() {
+	public DefaultTileCache() {
 	}
 
 	/**
@@ -55,6 +55,7 @@ public class TileCache {
 	 * @param img
 	 *            image to store in the cache
 	 */
+	@Override
 	public void put(URI uri, byte[] bimg, BufferedImage img) {
 		synchronized (bytemap) {
 			while (bytesize > 1000 * 1000 * 50) {
@@ -83,6 +84,7 @@ public class TileCache {
 	 * @throws IOException
 	 *             if retrieval fails
 	 */
+	@Override
 	public BufferedImage get(URI uri) throws IOException {
 		synchronized (imgmap) {
 			if (imgmap.containsKey(uri)) {
