@@ -356,8 +356,7 @@ public abstract class AbstractTileFactory extends TileFactory {
 							}
 						});
 					}
-				} catch (FileNotFoundException fnfe) // relevant for local URLs such as JAR/ZIP files only
-				{
+				} catch (FileNotFoundException fnfe) {// relevant for local URLs such as JAR/ZIP files only
 					log.error("Unable to load tile: " + fnfe.getMessage());
 					remainingAttempts = 0;
 				} catch (Throwable e) {

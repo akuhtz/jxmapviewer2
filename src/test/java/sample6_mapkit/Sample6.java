@@ -13,7 +13,8 @@ import javax.swing.JToolTip;
 
 import org.jxmapviewer.JXMapKit;
 import org.jxmapviewer.JXMapViewer;
-import org.jxmapviewer.bing.BingTileFactoryInfo;
+import org.jxmapviewer.VirtualEarthTileFactoryInfo;
+import org.jxmapviewer.VirtualEarthTileFactoryInfo.MVEMode;
 import org.jxmapviewer.viewer.DefaultTileFactory;
 import org.jxmapviewer.viewer.GeoPosition;
 import org.jxmapviewer.viewer.TileFactoryInfo;
@@ -29,9 +30,8 @@ public class Sample6 {
 	 *            the program args (ignored)
 	 */
 	public static void main(String[] args) {
-        
 		final JXMapKit jXMapKit = new JXMapKit();
-		TileFactoryInfo info = new BingTileFactoryInfo();
+		TileFactoryInfo info = new VirtualEarthTileFactoryInfo(VirtualEarthTileFactoryInfo.HYBRID);
 		DefaultTileFactory tileFactory = new DefaultTileFactory(info);
 		jXMapKit.setTileFactory(tileFactory);
 		jXMapKit.getMainMap().setDrawTileBorders(true);

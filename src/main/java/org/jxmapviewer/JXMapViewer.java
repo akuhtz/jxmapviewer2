@@ -291,7 +291,6 @@ public class JXMapViewer extends JPanel implements DesignMode {
 		}
 	}
 
-	@SuppressWarnings("unused")
 	private void drawOverlays(final int zoom, final Graphics g, final Rectangle viewportBounds) {
 		if (overlay != null) {
 			overlay.paint((Graphics2D) g, this, getWidth(), getHeight());

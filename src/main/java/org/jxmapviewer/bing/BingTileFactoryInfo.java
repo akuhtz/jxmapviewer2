@@ -61,8 +61,8 @@ public class BingTileFactoryInfo extends TileFactoryInfo {
 		}
 		builder.append("&shading=hill&og=526&n=z&c4w=1&cstl=vb&src=h");
 
-		System.out.println(x + ", " + y + ", " + zoom);
-		System.out.println(builder);
+		//System.out.println(x + ", " + y + ", " + zoom);
+		//System.out.println(builder);
 
 		return builder.toString();
 	}
